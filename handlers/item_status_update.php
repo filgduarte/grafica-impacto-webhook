@@ -4,7 +4,7 @@
 $item = $data['data'][0] ?? null;
 
 if (!$item) {
-    http_response_code(422);
+    http_response_code(200);
     exit('Dados do item ausentes');
 }
 
@@ -15,7 +15,7 @@ $orderItemStatus  = $item['status'] ?? null;
 $customerId = $item['cliente'] ?? null;
 
 if (!$orderId || !$customerId) {
-    http_response_code(422);
+    http_response_code(200);
     exit('Dados incompletos');
 }
 
@@ -27,7 +27,7 @@ try {
     );
 } catch (Exception $e) {
     error_log($e->getMessage());
-    http_response_code(500);
+    http_response_code(200);
     exit('Erro ao buscar pedido');
 }
 
@@ -38,23 +38,22 @@ try {
     );
 } catch (Exception $e) {
     error_log($e->getMessage());
-    http_response_code(500);
+    http_response_code(200);
     exit('Erro ao buscar cliente');
 }
-
 
 $order = $orderRaw['registros'][0] ?? null;
 $customer = $customerRaw['registros'][0] ?? null;
 
 if (!$order) {
-    http_response_code(422);
+    http_response_code(200);
     exit('Pedido não encontrado');
 }
 
 $orderItems = $order['itens'] ?? [];
 
 if (empty($orderItems)) {
-    http_response_code(422);
+    http_response_code(200);
     exit('Pedido sem itens');
 }
 
@@ -68,12 +67,18 @@ foreach ($orderItems as $itm) {
 }  
 
 if (!$orderItem) {
-    http_response_code(422);
+    http_response_code(200);
     exit('Item não encontrado no pedido');
 }
 
-// 4. Obter dados relevantes
-
+// 4. Definir webhook baseado no status do item
+if ($orderItemStatus == 5) {
+    $webhook_endpoint = $config['readytocollect_webhook']['endpoint'];
+    $webhook_token = $config['readytocollect_webhook']['token'];
+} else {
+    $webhook_endpoint = $config['statuschange_webhook']['endpoint'];
+    $webhook_token = $config['statuschange_webhook']['token'];
+}
 
 // 5. Montar payload
 /*
@@ -97,13 +102,20 @@ if (!$orderItem) {
 $phone = normalizePhone($customer['telefone'] ?? '');
 $cell = normalizePhone($customer['celular'] ?? '');
 
+if (empty($phone) && empty($cell)) {
+    http_response_code(200);
+    exit('Cliente sem telefone ou celular');
+}
+
 $payload = [
     'event' => 'order_status_update',
     'cliente' => [
         'nome'              => $customer['nome'] ?? '',
-        'nome_fantasia'     => $customer['fantasia'] ?? '',
         'sobrenome'         => $customer['sobrenome'] ?? '',
+        'nome_completo'     => trim(($customer['nome'] ?? '') . ' ' . ($customer['sobrenome'] ?? '')),
+        'nome_fantasia'     => $customer['fantasia'] ?? '',
         'celular'           => $cell,
+        'email'             => $customer['email_log'] ?? '',
         'telefone'          => $phone,
         'revendedor'        => ($customer['revendedor'] == 0) ? 'Não' : 'Sim',
         'tipo'              => $customer['tipo'] ?? '',
