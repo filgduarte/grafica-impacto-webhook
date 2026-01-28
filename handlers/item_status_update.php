@@ -9,7 +9,7 @@ if (!$item) {
 }
 
 // 2. Extrair dados necessários
-$orderId   = $item['id'] ?? null;
+$orderId   = $item['pedido'] ?? null;
 $orderItemNumber = $item['ftp'] ?? null;
 $orderItemStatus  = $item['status'] ?? null;
 $customerId = $item['cliente'] ?? null;
@@ -32,7 +32,7 @@ try {
 }
 
 try {
-    $customer = httpGet(
+    $customerRaw = httpGet(
         $config['ecommerce_restapi']['endpoint'] . '/cliente/' . $customerId,
         $config['ecommerce_restapi']['token']
     );
@@ -42,7 +42,9 @@ try {
     exit('Erro ao buscar cliente');
 }
 
+
 $order = $orderRaw['registros'][0] ?? null;
+$customer = $customerRaw['registros'][0] ?? null;
 
 if (!$order) {
     http_response_code(422);
@@ -85,8 +87,8 @@ if (!$orderItem) {
     ✅ Número do item
     Nome do produto
     Descrição do produto
-    Variação do item
-    Nome do arquivo
+    ✅ Variação do item
+    ✅ Nome do arquivo
     ✅ Entrega ou Retirada
     ✅ Tipo de entrega/retirada
     ✅ Endereço de entrega/retirada

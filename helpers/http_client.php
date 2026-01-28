@@ -8,7 +8,8 @@ function httpGet(string $url, string $token): array
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_HTTPHEADER => [
             'Authorization: Bearer ' . $token,
-            'Accept: application/json'
+            'Content-Type: application/json',
+            'User-Agent: GraficaImpactoWebhook/1.0'
         ],
         CURLOPT_TIMEOUT => 10
     ]);
