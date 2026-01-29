@@ -9,9 +9,9 @@ if (!$item) {
 }
 
 // 2. Extrair dados necessários
-$orderId   = $item['pedido'] ?? null;
+$orderId = $item['pedido'] ?? null;
 $orderItemNumber = $item['ftp'] ?? null;
-$orderItemStatus  = $item['status'] ?? null;
+$orderItemStatus = $item['status'] ?? null;
 $customerId = $item['cliente'] ?? null;
 
 if (!$orderId || !$customerId) {
@@ -71,15 +71,6 @@ if (!$orderItem) {
     exit('Item não encontrado no pedido');
 }
 
-// 4. Definir webhook baseado no status do item
-if ($orderItemStatus == 5) {
-    $webhook_endpoint = $config['readytocollect_webhook']['endpoint'];
-    $webhook_token = $config['readytocollect_webhook']['token'];
-} else {
-    $webhook_endpoint = $config['statuschange_webhook']['endpoint'];
-    $webhook_token = $config['statuschange_webhook']['token'];
-}
-
 // 5. Montar payload
 /*
     ✅ Nome completo do cliente
@@ -101,6 +92,26 @@ if ($orderItemStatus == 5) {
 */
 $phone = normalizePhone($customer['telefone'] ?? '');
 $cell = normalizePhone($customer['celular'] ?? '');
+$status = $orderItemStatus;
+$defaultStatuses = [
+    'Aguardando confirm. pagto',    // 0
+    'Pendente',                     // 1
+    'Em produção',                  // 2
+    'Em impressão',                 // 3
+    'Em acabamento',                // 4
+    'Disponível para retirada',     // 5
+    'Material retirado',            // 6
+    'Cancelado',                    // 7
+    'Cancelado pelo cliente',       // 8
+    'Aguardando envio',             // 9
+    'Em transporte',                // 10
+    'Entregue',                     // 11
+    'Despachado',                   // 12
+];
+
+if ($orderItemStatus < count($defaultStatuses)) {
+    $status = $defaultStatuses[$orderItemStatus];
+}
 
 if (empty($phone) && empty($cell)) {
     http_response_code(200);
@@ -144,8 +155,11 @@ $payload = [
         'previsao_producao' => $orderItem['previsao_producao'] ?? '',
         'produto'           => $orderItem['produto'] ?? '',
         'quantidade'        => $orderItem['qtde'] ?? '',
-        'status'            => $orderItem['status'] ?? '',
+        'status'            => $status ?? '',
         'valor'             => $orderItem['valor'] ?? '',
         'variacao'          => $orderItem['vars'] ?? '',
     ],
 ];
+
+$webhook_endpoint = $config['statuschange_webhook']['endpoint'];
+$webhook_token = $config['statuschange_webhook']['token'];
