@@ -19,7 +19,8 @@ require __DIR__ . '/helpers/utils.php';
 // 2. Ler o corpo da requisição
 // $rawBody = file_get_contents('php://input'); // Comentado para teste local
 // $data = json_decode($rawBody, true); // Comentado para teste local
-$data = json_decode('{"event":"ITEM_STATUS_UPDATE","timestamp":"2026-01-27 17:26:39","data":[{"id":"35835","ftp":"773-002","pedido":"23832","cliente":"773","status":"11"}]}', true);
+$data = json_decode('{"event":"ITEM_STATUS_UPDATE","timestamp":"2026-01-27 17:26:39","data":[{"id":"35835","ftp":"773-002","pedido":"23832","cliente":"773","status":"11","produto":"6"}]}', true);
+// $data = json_decode('{"event":"ORDER_NEW","timestamp":"2026-01-29 09:26:14","data":[{"id":"23876","cliente":"773","itens":[{"id":"35965","ftp":"773-003","pedido":"23876","cliente":"773","produto":"0"}]}]}', true);
 
 // 3. Validar JSON
 if (!$data) {

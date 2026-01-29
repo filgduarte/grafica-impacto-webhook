@@ -12,6 +12,7 @@ if (!$item) {
 $orderId = $item['pedido'] ?? null;
 $orderItemNumber = $item['ftp'] ?? null;
 $orderItemStatus = $item['status'] ?? null;
+$orderItemProduct = $item['produto'] ?? null;
 $customerId = $item['cliente'] ?? null;
 
 if (!$orderId || !$customerId) {
@@ -19,7 +20,8 @@ if (!$orderId || !$customerId) {
     exit('Dados incompletos');
 }
 
-// 3. Buscar dados do pedido e do cliente no e-commerce
+// 3. Buscar dados no e-commerce
+// 3.1 Dados do pedido
 try {
     $orderRaw = httpGet(
         $config['ecommerce_restapi']['endpoint'] . '/pedido/' . $orderId,
@@ -30,7 +32,18 @@ try {
     http_response_code(200);
     exit('Erro ao buscar pedido');
 }
-
+// 3.2 Dados do produto
+try {
+    $productRaw = httpGet(
+        $config['ecommerce_restapi']['endpoint'] . '/produto/' . $orderItemProduct,
+        $config['ecommerce_restapi']['token']
+    );
+} catch (Exception $e) {
+    error_log($e->getMessage());
+    http_response_code(200);
+    exit('Erro ao buscar produto');
+}
+// 3.3 Dados do cliente
 try {
     $customerRaw = httpGet(
         $config['ecommerce_restapi']['endpoint'] . '/cliente/' . $customerId,
@@ -43,6 +56,7 @@ try {
 }
 
 $order = $orderRaw['registros'][0] ?? null;
+$product = $productRaw['registros'][0] ?? null;
 $customer = $customerRaw['registros'][0] ?? null;
 
 if (!$order) {
@@ -71,25 +85,10 @@ if (!$orderItem) {
     exit('Item não encontrado no pedido');
 }
 
+$webhook_endpoint = $config['statuschange_webhook']['endpoint'];
+$webhook_token = $config['statuschange_webhook']['token'];
+
 // 5. Montar payload
-/*
-    ✅ Nome completo do cliente
-    ✅ Telefone
-    ✅ Celular
-    ✅ Nome fantasia
-    ✅ Tipo de cliente (Física ou Jurídica)
-    ✅ Revendedor (Sim ou Não)
-    ✅ Número do pedido (Id)
-    ✅ Número do item
-    Nome do produto
-    Descrição do produto
-    ✅ Variação do item
-    ✅ Nome do arquivo
-    ✅ Entrega ou Retirada
-    ✅ Tipo de entrega/retirada
-    ✅ Endereço de entrega/retirada
-    ✅ Link de rastreio
-*/
 $phone = normalizePhone($customer['telefone'] ?? '');
 $cell = normalizePhone($customer['celular'] ?? '');
 $status = $orderItemStatus;
@@ -119,7 +118,7 @@ if (empty($phone) && empty($cell)) {
 }
 
 $payload = [
-    'event' => 'order_status_update',
+    'event' => 'ITEM_STATUS_UPDATE',
     'cliente' => [
         'nome'              => $customer['nome'] ?? '',
         'sobrenome'         => $customer['sobrenome'] ?? '',
@@ -130,10 +129,6 @@ $payload = [
         'telefone'          => $phone,
         'revendedor'        => ($customer['revendedor'] == 0) ? 'Não' : 'Sim',
         'tipo'              => $customer['tipo'] ?? '',
-        'valor_total'       => $order['total'] ?? '',
-        'acrescimo'         => $order['acrescimo'] ?? '',
-        'desconto'          => $order['desconto'] ?? '',
-        'frete_valor'       => $order['frete_valor'] ?? '',
     ],
     'entrega' => [
         'endereco'          => $order['frete_endereco'] ?? '',
@@ -153,13 +148,14 @@ $payload = [
         'numero'            => $orderId,
         'previsao_entrega'  => $orderItem['previsao_entrega'] ?? '',
         'previsao_producao' => $orderItem['previsao_producao'] ?? '',
-        'produto'           => $orderItem['produto'] ?? '',
+        'produto'           => $product['titulo'] ?? '',
         'quantidade'        => $orderItem['qtde'] ?? '',
         'status'            => $status ?? '',
-        'valor'             => $orderItem['valor'] ?? '',
         'variacao'          => $orderItem['vars'] ?? '',
+        'valor'             => $orderItem['valor'] ?? '',
+        'acrescimo'         => $order['acrescimo'] ?? '',
+        'desconto'          => $order['desconto'] ?? '',
+        'frete_valor'       => $order['frete_valor'] ?? '',
+        'valor_total'       => $order['total'] ?? '',
     ],
 ];
-
-$webhook_endpoint = $config['statuschange_webhook']['endpoint'];
-$webhook_token = $config['statuschange_webhook']['token'];
