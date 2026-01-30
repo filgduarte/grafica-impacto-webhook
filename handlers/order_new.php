@@ -5,6 +5,7 @@ $itens = $data['data'][0]['itens'] ?? null;
 
 if (!$itens) {
     http_response_code(200);
+    error_log('No items data found in payload: ' . json_encode($data));
     exit('Dados dos itens ausentes');
 }
 
@@ -14,6 +15,7 @@ $customerId = $itens[0]['cliente'] ?? null;
 
 if (!$orderId || !$customerId) {
     http_response_code(200);
+    error_log('Incomplete data: orderId or customerId missing. Payload: ' . json_encode($data));
     exit('Dados incompletos');
 }
 
@@ -46,6 +48,7 @@ $customer = $customerRaw['registros'][0] ?? null;
 
 if (!$order) {
     http_response_code(200);
+    error_log('Order not found: ' . $orderId);
     exit('Pedido não encontrado');
 }
 
@@ -53,6 +56,7 @@ $orderItems = $order['itens'] ?? [];
 
 if (empty($orderItems)) {
     http_response_code(200);
+    error_log('Order has no items: ' . $orderId);
     exit('Pedido sem itens');
 }
 
@@ -67,6 +71,7 @@ $cell = normalizePhone($customer['celular'] ?? '');
 
 if (empty($phone) && empty($cell)) {
     http_response_code(200);
+    error_log('Customer has no phone or cell: ' . $customerId);
     exit('Cliente sem telefone ou celular');
 }
 

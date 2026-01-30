@@ -3,6 +3,7 @@
 // 1. Verificações iniciais de segurança
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
+    error_log('Method Not Allowed: ' . $_SERVER['REQUEST_METHOD']);
     echo 'Method Not Allowed';
     exit;
 }
@@ -12,6 +13,7 @@ require __DIR__ . '/helpers/http_client.php';
 require __DIR__ . '/helpers/utils.php';
 
 if (($_SERVER['HTTP_X_WEBHOOK_TOKEN'] ?? '') !== $config['ecommerce_webhook']['token']) {
+    error_log('Unauthorized access attempt with token: ' . ($_SERVER['HTTP_X_WEBHOOK_TOKEN'] ?? ''));
     http_response_code(401);
     exit('Unauthorized');
 }
@@ -23,6 +25,7 @@ $data = json_decode($rawBody, true);
 // 3. Validar JSON
 if (!$data) {
     http_response_code(200);
+    error_log('Invalid JSON received: ' . $rawBody);
     exit('Invalid JSON');
 }
 
@@ -41,11 +44,13 @@ switch ($event) {
 
     default:
         http_response_code(200);
+        error_log('Unsupported event type: ' . $event);
         exit('Evento não suportado');
 }
 
 if (!file_exists($handler)) {
     http_response_code(200);
+    error_log('Handler not found for event: ' . $event);
     exit('Handler não encontrado');
 }
 
