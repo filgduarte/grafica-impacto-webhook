@@ -69,4 +69,5 @@ try {
 
 // 6. Retornar resposta para o e-commerce
 http_response_code(200);
+error_log('Webhook processado com sucesso para o evento: ' . $event);
 echo 'OK';
