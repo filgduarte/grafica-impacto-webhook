@@ -4,17 +4,21 @@
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     error_log('Method Not Allowed: ' . $_SERVER['REQUEST_METHOD']);
-    echo 'Method Not Allowed';
-    exit;
+    exit('Method Not Allowed');
 }
 
 $config = require __DIR__ . '/secrets/webhook.php';
 require __DIR__ . '/helpers/http_client.php';
 require __DIR__ . '/helpers/utils.php';
 
-if (($_SERVER['HTTP_X_WEBHOOK_TOKEN'] ?? '') !== $config['ecommerce_webhook']['token']) {
-    error_log('Unauthorized access attempt with token: ' . ($_SERVER['HTTP_X_WEBHOOK_TOKEN'] ?? ''));
-    http_response_code(401);
+if (($_SERVER['HTTP_X_WEBHOOK_SECRET'] ?? '') !== $config['ecommerce_webhook']['token']) {
+    foreach ($_SERVER as $key => $value) {
+        if (str_starts_with($key, 'HTTP_')) {
+            $headers[$key] = $value;
+        }
+    }
+    error_log('Unauthorized access attempt.' . print_r($headers, true));
+    http_response_code(200);
     exit('Unauthorized');
 }
 
@@ -69,5 +73,4 @@ try {
 
 // 6. Retornar resposta para o e-commerce
 http_response_code(200);
-error_log('Webhook processado com sucesso para o evento: ' . $event);
 echo 'OK';

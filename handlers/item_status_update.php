@@ -96,6 +96,7 @@ $webhook_token = $config['statuschange_webhook']['token'];
 // 5. Montar payload
 $phone = normalizePhone($customer['telefone'] ?? '');
 $cell = normalizePhone($customer['celular'] ?? '');
+$productTitle = sanitizeString( $product ? $product['titulo'] : ($orderItem['descricao'] ?? '') );
 $status = $orderItemStatus;
 $defaultStatuses = [
     'Aguardando confirm. pagto',    // 0
@@ -133,7 +134,7 @@ $payload = [
         'celular'           => $cell,
         'email'             => $customer['email_log'] ?? '',
         'telefone'          => $phone,
-        'revendedor'        => ($customer['revendedor'] == 0) ? 'Não' : 'Sim',
+        'revendedor'        => $customer['revendedor'] ?? 0,
         'tipo'              => $customer['tipo'] ?? '',
     ],
     'entrega' => [
@@ -154,7 +155,7 @@ $payload = [
         'numero'            => $orderId,
         'previsao_entrega'  => $orderItem['previsao_entrega'] ?? '',
         'previsao_producao' => $orderItem['previsao_producao'] ?? '',
-        'produto'           => $product['titulo'] ?? '',
+        'produto'           => $productTitle ?? '',
         'quantidade'        => $orderItem['qtde'] ?? '',
         'status'            => $status ?? '',
         'variacao'          => $orderItem['vars'] ?? '',
