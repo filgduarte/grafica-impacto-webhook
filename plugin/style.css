@@ -283,7 +283,6 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 8px;
     font-family: var(--font-family-system);
     font-size: 14px;
     color: var(--content-primary);
@@ -353,7 +352,6 @@ button:hover {
     }
 
     .timer {
-
         margin-bottom: 20px;
         display: none;
     }
