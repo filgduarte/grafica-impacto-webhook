@@ -290,46 +290,6 @@ body {
     background-color: var(--base-100);
 }
 
-.container {
-    padding: 16px 32px;
-    width: 100%;
-    text-align: center;
-    background-color: rgba(0, 0, 0, 0.13);
-    border-radius: var(--radius-large);
-}
-
-.status {
-    font-size: 18px;
-    margin: 20px 0;
-    font-weight: bold;
-}
-
-.status.active {
-    color: #2e7d32;
-}
-
-.status.paused {
-    color: #c62828;
-}
-
-.timer {
-    font-size: 16px;
-    margin-bottom: 20px;
-    color: #555;
-}
-
-.pause-control {
-    margin-top: 20px;
-}
-
-.pause-button {
-    margin-bottom: 10px;
-}
-
-.hidden {
-    display: none;
-}
-
 input,
 textarea,
 select,
@@ -379,20 +339,59 @@ button:hover {
     background: var(--secondary-button-background-hover);
 }
 
-#pauseSeconds {
-    display: inline-block;
-    padding: 5px 10px;
-    min-width: 36px;
-    height: 36px;
+.container {
+    padding: 16px 32px;
+    width: 100%;
     text-align: center;
-    outline: none;
-    color: var(--content-primary);  
-    border: 2px solid var(--btn-hover-fill);
-    border-radius: 6px;
-}
+    background-color: rgba(0, 0, 0, 0.13);
+    border-radius: var(--radius-large);
 
-.footer {
-    margin-top: 20px;
-    font-size: 12px;
-    color: #888;
+    .status {
+        margin-bottom: 10px;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .timer {
+
+        margin-bottom: 20px;
+        display: none;
+    }
+
+    .pause-button {
+        margin-bottom: 10px;
+    }
+
+    .resume-control {
+        display: none;
+    }
+
+    .resume-button {
+        margin-bottom: 10px;
+    }
+
+    #pause-seconds {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 5px 10px;
+        min-width: 36px;
+        height: 36px;
+        text-align: center;
+        outline: none;
+        color: var(--content-primary);  
+        border: 2px solid var(--btn-hover-fill);
+        border-radius: 6px;
+    }
+
+    &.paused {
+        .timer {
+            display: block;
+        }
+        .pause-control {
+            display: none;
+        }
+        .resume-control {
+            display: block;
+        }
+    }
 }

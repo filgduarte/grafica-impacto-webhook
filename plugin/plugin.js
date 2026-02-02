@@ -21,34 +21,29 @@ async function apiRequest(action, extra = {}) {
 async function loadStatus() {
     const data = await apiRequest('status');
 
+    const container = document.getElementById('plugin-container');
     const statusEl = document.getElementById('status');
-    const timerEl = document.getElementById('timer');
-    const pauseControl = document.getElementById('pause-control');
-    const pauseButton = document.getElementById('pauseButton');
-    const resumeControl = document.getElementById('resume-control');
-    const resumeButton = document.getElementById('resumeButton');
+    const timerEl = document.querySelector('.timer span');
+    const pauseButton = document.getElementById('pause-button');
+    const resumeButton = document.getElementById('resume-button');
 
     if (!data.paused) {
         statusEl.textContent = '🟢 Serviço Ativo';
-        statusEl.className = 'status active';
-        timerEl.textContent = '';
-        pauseControl.classList.remove('hidden');
+        container.classList.remove('paused');
+        timerEl.textContent = '??';
         pauseButton.disabled = false;
-        resumeControl.classList.add('hidden');
         clearInterval(countdownInterval);
     } else {
         pausedUntil = Number(data.until) * 1000;
         statusEl.textContent = '⚫ Serviço Pausado';
-        statusEl.className = 'status paused';
-        resumeControl.classList.remove('hidden');
+        container.classList.add('paused');
         resumeButton.disabled = false;
-        pauseControl.classList.add('hidden');
         startCountdown();
     }
 }
 
 function startCountdown() {
-    const timerEl = document.getElementById('timer');
+    const timerEl = document.querySelector('.timer span');
 
     clearInterval(countdownInterval);
     countdownInterval = setInterval(() => {
@@ -61,19 +56,19 @@ function startCountdown() {
             return;
         }
 
-        timerEl.textContent = `Retomando em ${diff} segundos`;
+        timerEl.textContent = diff;
     }, 1000);
 }
 
 async function pause() {
-    document.getElementById('pauseButton').disabled = true;
-    const pauseSeconds = parseInt(document.getElementById('pauseSeconds').textContent) || 30;
+    document.getElementById('pause-button').disabled = true;
+    const pauseSeconds = parseInt(document.getElementById('pause-seconds').textContent) || 30;
     await apiRequest('pause', { seconds: pauseSeconds });
     loadStatus();
 }
 
 async function resume() {
-    document.getElementById('resumeButton').disabled = true;
+    document.getElementById('resume-button').disabled = true;
     await apiRequest('resume');
     loadStatus();
 }
