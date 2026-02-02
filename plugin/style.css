@@ -1,0 +1,398 @@
+:root {
+    --mobile-width: 700px;
+    --multi-workspace-width: 60px;
+    --siderBg: #03363d;
+    --side-width-closed: 74px;
+    --side-width-opened: 280px;
+    --contextBg: #f7f7f7;
+    --contextBgBorderColor: #e8eaed;
+    --shade-00: #1d1e20;
+    --shade-05: #46474f;
+    --shade-10: #70727e;
+    --shade-20: #91939d;
+    --shade-30: #bfc0c7;
+    --shade-40: #dbdbdf;
+    --shade-45: #efeff1;
+    --shade-50: #f4f4f6;
+    --shade-55: #f1f0f0;
+    --shade-60: rgba(93, 105, 133, 0.1);
+    --shade-100: #fdfdfd;
+    --note: #ffeda5;
+    --transition: all 0.13s ease-in-out;
+    --radius-normal: 4px;
+    --radius-large: 10px;
+    --font-family-system: ui-sans-serif, "Segoe UI", "Segoe UI Historic", "Segoe UI", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    --elevation: 0 1px 0 0 rgba(0, 0, 0, 0.05), 0 0 20px 0 rgba(0, 0, 0, 0.15);
+    --border-normal: 2px solid var(--shade-50);
+    --neutralQuaternaryAlt: #e1dfdd;
+    --neutralLight: #edebe9;
+    --neutralLighter: #f3f2f1;
+    --neutralLighterAlt: #faf9f8;
+    --ninjaboxBgLight: #f7f7f7;
+    --themeDarker: #004578;
+    --themeDark: #005a9e;
+    --themeDarkAlt: #106ebe;
+    --themePrimary: #0078d4;
+    --themeSecondary: #2b88d8;
+    --primary: #367fee;
+    --primary-text-light: var(--primarySkin);
+    --primarySkin: #367fee;
+    --tertiary: rgb(0, 164, 189);
+    --tertiary-hover: rgb(4, 145, 167);
+    --primarySkinDarker: #2c6fd4;
+    --primaryDarker: #2c6fd4;
+    --themeTertiary: #71afe5;
+    --themeLight: #c7e0f4;
+    --themeLighter: #deecf9;
+    --themeLighterAlt: #eff6fc;
+    --n-drawer-background: #f9f8f7;
+    --n-editing-view-background: #f7f7f7;
+    --header-height: 56px;
+    --top-banner-height: 40px;
+    --top-height: var(--header-height);
+    --main-height: calc(100vh - var(--top-height));
+    --header-button-round-color: #4d5d5f;
+    --gray-10: #f7f9fa;
+    --gray-20: #f0f2f5;
+    --gray-30: #e3e5e6;
+    --gray-40: #c6cacc;
+    --gray-45: #4f5665;
+    --gray-60: #919699;
+    --gray-80: #5e6366;
+    --gray-90: #3e4345;
+    --sidebar-panel-animation: 0.2s cubic-bezier(0.2, 0.3, 0.25, 0.9);
+    --bg-grey-hover: rgba(120, 144, 156, 0.1);
+    --secondary: #78909c;
+    --secondary-darker: #637781;
+    --transition-02s-linear: 0.2s linear;
+    --transition-02s-ease-in-out: 0.2s ease-in-out;
+    --transition-02s-infinite-linear: 0.2s infinite linear;
+    --transition-02s-cubic-bezier: 0.2s cubic-bezier(0.2, 0.3, 0.25, 0.9);
+    --secondary-opacity-10: rgba(120, 144, 156, 10%);
+    --tertiary-background: #f0f2f5;
+    --actionable-onPrimaryBackground-hover-fill: #f7f9fa;
+    --actionable-onSecondaryBackground-hover-fill: rgba(120, 144, 156, 0.1);
+    --actionable-onPrimaryBackground-selected-fill: #f0f2f5;
+    --hover-overlay: var(--actionable-onPrimaryBackground-selected-fill);
+    --press-overlay: var(--actionable-selected-fill-active);
+    --actionable-onSecondaryBackground-selected-fill: rgba(120, 144, 156, 0.2);
+    --actionable-selected-fill-active: #eaf7ff;
+    --actionable-button-fill: #ebeef3;
+    --actionable-button-fill-hover: #e1e4eb;
+    --actionable-secondary-idle-fill: #f2f6f7;
+    --actionable-focus-fill: var(--actionable-button-fill);
+    --actionable-focus-fill-lighter: #f0f3f8;
+    --table-row-hover-fill: #f0f2f5;
+    --table-row-hover-fill-sorting: #e1e7ee;
+    --content-primary: #282f30;
+    --content-primary-active: var(--content-primary);
+    --content-secondary: #6c777a;
+    --content-tertiary: #b3c7d1;
+    --hover-inner-button: rgba(0, 0, 0, 0.06);
+    --btn-hover-fill: var(--divider-tertiary);
+    --base-100-hover: var(--btn-hover-fill);
+    --divider: rgb(232, 234, 237);
+    --divider-200: rgb(200, 204, 207);
+    --divider-primary: #c4c7c8;
+    --divider-secondary: #e3e5e6;
+    --divider-tertiary: #eff1f4;
+    --message-bubble-other-idle-fill: #e8eaed;
+    --message-bubble-other-focus-fill: #daddde;
+    --message-bubble-self-idle-fill: #c7edf5;
+    --message-bubble-self-focus-fill: #afd1d8;
+    --message-bubble-other-text: #282f30;
+    --message-bubble-self-text: #282f30;
+    --chat-background: #fff;
+    --editor-background: var(--base-100);
+    --editor-border: 1px solid var(--divider-primary);
+    --pending-yellow-background: #fcf9e6;
+    --pending-yellow-background-hover: #fff3cc;
+    --pending-red-background: #ffeded;
+    --pending-red-background-hover: #ffdede;
+    --dropdown-background: var(--base-100);
+    --dropdown-border-color: var(--divider-secondary);
+    --icon-trigger-color: #bbbdbf;
+    --select-input-item-active-fill: #e6f8ff;
+    --search-bg: #f0f2f5;
+    --border-radius-small: 5px;
+    --border-radius: 5px;
+    --border-radius-large: 10px;
+    --integration-card: #eff1f4;
+    --integration-card-shadow: 0 2px 8px rgba(0, 0, 0, 0.11);
+    --background-modifier-accent: rgba(6, 6, 7, 0.08);
+    --text-muted: #747f8d;
+    --tooltip-background: #293139;
+    --elevation-panel: rgba(34, 39, 64, 0.25) -7px 0px 17px -5px;
+    --button-disabled-background: #dee1e4;
+    --disabled-input-fill: var(--divider-tertiary);
+    --input-background: #fff;
+    --input-border-color: var(--divider-secondary);
+    --input-border-color-hover: var(--divider-secondary);
+    --input-secondary-background: var(--base-200);
+    --room-message-hover-fill: var(--actionable-onPrimaryBackground-hover-fill);
+    --reconnecting-bg: rgba(255, 255, 255, 0.9);
+    --scroll-handler: #cccccc;
+    --scroll-handler-hover: #a9a9a9;
+    --scroll-handler-bg: #f2f2f2;
+    --big-icon-color: var(--divider);
+    --bot-node-fill: rgba(255, 255, 255, 0.85);
+    --bot-node-bubble-fill: #eef0f3;
+    --bot-media-fill: rgb(48, 51, 107);
+    --card-gray-fill: var(--base-200);
+    --card-gray-fill-hover: #f0f3f5;
+    --shadow-dark-2dp: 0 1px 2px rgba(8, 35, 48, 0.08), 0px 2px 6px rgba(8, 35, 48, 0.08);
+    --shadow-dark-4dp: 0 2px 4px rgba(8, 35, 48, 0.12);
+    --shadow-dark-8dp: 0 4px 8px rgba(8, 35, 48, 0.1);
+    --shadow-dark-12dp: 0 4px 10px rgba(8, 35, 48, 0.12);
+    --shadow-1: rgba(0, 0, 0, 0.1);
+    --shadow-2: rgba(0, 0, 0, 0.2);
+    --shadow-5: rgba(0, 0, 0, 0.5);
+    --shadow-8: rgba(0, 0, 0, 0.8);
+    --secondary-button-background: var(--actionable-button-fill);
+    --secondary-button-background-hover: #d9dee5;
+    --card-gray-background: #f5f5f5;
+    --rounded-icon-color: #3c5070;
+    --rounded-icon-color-hover: #3c5070;
+    --bot-balloon: #e8e3ff;
+    --app-container-gap: 0px;
+    --cmdk-background: var(--base-100);
+    --elevation-drop: var(--elevation);
+    --app-container-radius: 10px;
+    --selected-lighter-more: rgba(7, 30, 90, 0.015);
+    --selected-lighter: rgba(7, 30, 90, 0.03);
+    --selected-light: rgba(7, 30, 90, 0.05);
+    --selected: rgba(7, 30, 90, 0.08);
+    --selected-active: rgba(7, 30, 90, 0.1);
+    --selected-active-more: rgba(7, 30, 90, 0.2);
+    --selected-solid: #f2f2f2;
+    --selected-solid-hover: #ebebeb;
+    --separator-lighter-more: var(--selected-lighter-more);
+    --separator-lighter: var(--selected-lighter);
+    --separator-light: var(--selected-light);
+    --separator: var(--selected);
+    --separator-active: var(--selected-active);
+    --separator-active-more: var(--selected-active-more);
+    --em-rgb-background: var(--dropdown-background);
+}
+
+.dark-mode {
+    --note: #fde68a;
+    --big-icon-color: #4f545d;
+    --scroll-handler: #202225;
+    --rounded-icon-color: #abb2be;
+    --rounded-icon-color-hover: #ced3dd;
+    --search-bg: #484a4e;
+    --scroll-handler-bg: rgba(0, 0, 0, 0.1);
+    --reconnecting-bg: rgba(27, 28, 34, 0.9);
+    --input-border-color: #222428;
+    --input-border-color-hover: var(--input-border-color);
+    --input-background: #303339;
+    --input-secondary-background: var(--input-background);
+    --tertiary-background: var(--editor-background);
+    --tooltip-background: #000;
+    --header-button-round-color: var(--content-secondary);
+    --content-primary-active: #fff;
+    --content-primary: #cacbcc;
+    --actionable-button-fill: var(--actionable-onSecondaryBackground-hover-fill);
+    --actionable-button-fill-hover: var(--actionable-onSecondaryBackground-selected-fill);
+    --actionable-onPrimaryBackground-selected-fill: rgba(255, 255, 255, 0.1);
+    --content-secondary: #b6b9bd;
+    --header-button-round-fill: var(--actionable-onSecondaryBackground-hover-fill);
+    --secondary: #8e9297;
+    --text-muted: var(--secondary);
+    --actionable-onPrimaryBackground-hover-fill: rgba(79, 84, 92, 0.16);
+    --actionable-onSecondaryBackground-hover-fill: rgba(79, 84, 92, 0.36);
+    --actionable-onSecondaryBackground-selected-fill: rgba(79, 84, 92, 0.52);
+    --btn-hover-fill: var(--actionable-onSecondaryBackground-hover-fill);
+    --base-100-hover: var(--btn-hover-fill);
+    --actionable-secondary-idle-fill: var(--input-background);
+    --actionable-selected-fill-active: var(--actionable-onSecondaryBackground-selected-fill);
+    --room-message-hover-fill: rgba(0, 0, 0, 0.1);
+    --actionable-focus-fill: rgba(79, 84, 92, 0.52);
+    --table-row-hover-fill: #43474e;
+    --table-row-hover-fill-sorting: #4b5059;
+    --chat-background: var(--base-100);
+    --editor-background: #3b3e43;
+    --editor-border: 1px solid var(--editor-background);
+    --editor-placeholder-color: var(--secondary);
+    --divider-primary: rgba(255, 255, 255, 0.15);
+    --divider-tertiary: rgba(255, 255, 255, 0.05);
+    --divider-secondary: rgba(255, 255, 255, 0.1);
+    --disabled-input-fill: #404349;
+    --divider: hsla(0, 0%, 100%, 0.06);
+    --divider-200: hsla(0, 0%, 100%, 0.09);
+    --gray-20: #404249;
+    --shade-20: var(--content-secondary);
+    --gray-30: #4a4d53;
+    --gray-45: var(--content-secondary);
+    --message-bubble-other-idle-fill: #474c57;
+    --message-bubble-self-idle-fill: #4572d8;
+    --message-bubble-self-focus-fill: #2e4e8c;
+    --message-bubble-other-text: rgb(228, 230, 235);
+    --elevation-panel: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    --elevation: var(--elevation-panel);
+    --message-bubble-self-text: #fff;
+    --button-disabled-background: rgba(0, 0, 0, 0.2);
+    --pending-yellow-background: #49443c;
+    --pending-yellow-background-hover: #504738;
+    --pending-red-background: #442f30;
+    --pending-red-background-hover: #4e2e2e;
+    --dropdown-background: #202225;
+    --dropdown-border-color: #202225;
+    --icon-trigger-color: var(--secondary);
+    --select-input-item-active-fill: rgba(69, 114, 216, 0.15);
+    --bot-node-fill: rgba(64, 69, 77, 0.85);
+    --bot-node-bubble-fill: #505960;
+    --bot-media-fill: rgb(86 94 230);
+    --card-gray-fill: var(--base-200);
+    --card-gray-fill-hover: var(--divider);
+    --primary: #1d9bf0;
+    --primaryDarker: rgb(26, 140, 216);
+    --primarySkin: #1d9bf0;
+    --primarySkinDarker: rgb(26, 140, 216);
+    --secondary-button-background: rgba(255, 255, 255, 0.1);
+    --secondary-button-background-hover: rgba(255, 255, 255, 0.2);
+    --card-gray-background: #41454f;
+    --bot-balloon: #5758bb;
+    --selected-lighter-more: rgba(255, 255, 255, 0.015);
+    --selected-lighter: rgba(255, 255, 255, 0.03);
+    --selected-light: rgba(255, 255, 255, 0.05);
+    --selected: rgba(255, 255, 255, 0.08);
+    --selected-active: rgba(255, 255, 255, 0.1);
+    --selected-active-more: rgba(255, 255, 255, 0.2);
+    --selected-solid: #2a2a2a;
+    --selected-solid-hover: #363636;
+    --base-100: #36393f;
+    --base-200: #292b2f;
+    --base-300: #43454a;
+    --base-400: rgba(255, 255, 255, 0.07);
+    --base-500: #18191a;
+    --content-100: #cacbcc;
+    --content-200: #b6b9bd;
+    --content-300: #8e9297;
+    --edge: #656a72;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px;
+    font-family: var(--font-family-system);
+    font-size: 14px;
+    color: var(--content-primary);
+    background-color: var(--base-100);
+}
+
+.container {
+    padding: 16px 32px;
+    width: 100%;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.13);
+    border-radius: var(--radius-large);
+}
+
+.status {
+    font-size: 18px;
+    margin: 20px 0;
+    font-weight: bold;
+}
+
+.status.active {
+    color: #2e7d32;
+}
+
+.status.paused {
+    color: #c62828;
+}
+
+.timer {
+    font-size: 16px;
+    margin-bottom: 20px;
+    color: #555;
+}
+
+.pause-control {
+    margin-top: 20px;
+}
+
+.pause-button {
+    margin-bottom: 10px;
+}
+
+.hidden {
+    display: none;
+}
+
+input,
+textarea,
+select,
+button {
+    box-sizing: border-box;
+    padding: 5px 10px;
+    font-family: var(--font-family-system);
+    font-size: 14px;
+    color: var(--content-primary);
+    border: 0;
+    border-radius: 6px;
+}
+
+input {
+    background-color: var(--btn-hover-fill);
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    width: 48px;
+    height: max-content;
+    height: 36px;
+    line-height: 1.3715;
+    -moz-appearance: textfield;
+}
+
+button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: max-content;
+    height: 36px;
+    font-weight: 600;
+    line-height: 1.3715;
+    background: var(--secondary-button-background);
+    cursor: pointer;
+    transition: none;
+}
+
+button:hover {
+    color: var(--content-primary);
+    background: var(--secondary-button-background-hover);
+}
+
+#pauseSeconds {
+    display: inline-block;
+    padding: 5px 10px;
+    min-width: 36px;
+    height: 36px;
+    text-align: center;
+    outline: none;
+    color: var(--content-primary);  
+    border: 2px solid var(--btn-hover-fill);
+    border-radius: 6px;
+}
+
+.footer {
+    margin-top: 20px;
+    font-size: 12px;
+    color: #888;
+}
