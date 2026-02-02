@@ -22,7 +22,8 @@ function getWebhookPauseStatus(): array
     if (!file_exists($pauseFile)) {
         return [
             'paused' => false,
-            'until'  => null
+            'until'  => null,
+            'remaining' => 0
         ];
     }
 
@@ -32,13 +33,15 @@ function getWebhookPauseStatus(): array
         unlink($pauseFile);
         return [
             'paused' => false,
-            'until'  => null
+            'until'  => null,
+            'remaining' => 0
         ];
     }
 
     return [
         'paused' => true,
-        'until'  => $until
+        'until'  => $until,
+        'remaining' => max(0, $until - time())
     ];
 }
 

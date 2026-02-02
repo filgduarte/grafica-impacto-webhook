@@ -3,7 +3,7 @@ const ENDPOINT = SCRIPT.dataset.endpoint;
 const AUTH_SECRET = SCRIPT.dataset.secret;
 
 let countdownInterval = null;
-let pausedUntil = null;
+let remainingSeconds = 0;
 
 async function apiRequest(action, extra = {}) {
     const response = await fetch(ENDPOINT, {
@@ -34,7 +34,7 @@ async function loadStatus() {
         pauseButton.disabled = false;
         clearInterval(countdownInterval);
     } else {
-        pausedUntil = Number(data.until) * 1000;
+        remainingSeconds = Number(data.remaining);
         statusEl.textContent = '⚫ Serviço Pausado';
         container.classList.add('paused');
         resumeButton.disabled = false;
@@ -47,16 +47,14 @@ function startCountdown() {
 
     clearInterval(countdownInterval);
     countdownInterval = setInterval(() => {
-        const now = Date.now();
-        const diff = Math.max(0, Math.floor((pausedUntil - now) / 1000));
-
-        if (diff <= 0) {
+        if (remainingSeconds <= 0) {
             clearInterval(countdownInterval);
             loadStatus();
             return;
         }
 
-        timerEl.textContent = diff;
+        timerEl.textContent = remainingSeconds;
+        remainingSeconds--;
     }, 1000);
 }
 
