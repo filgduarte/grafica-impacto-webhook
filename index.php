@@ -9,6 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $config = require __DIR__ . '/secrets/webhook.php';
 require __DIR__ . '/helpers/http_client.php';
+require __DIR__ . '/helpers/pause_resume.php';
 require __DIR__ . '/helpers/utils.php';
 
 if (($_SERVER['HTTP_X_WEBHOOK_SECRET'] ?? '') !== $config['ecommerce_webhook']['token']) {
@@ -17,9 +18,15 @@ if (($_SERVER['HTTP_X_WEBHOOK_SECRET'] ?? '') !== $config['ecommerce_webhook']['
             $headers[$key] = $value;
         }
     }
-    error_log('Unauthorized access attempt.' . print_r($headers, true));
     http_response_code(200);
+    error_log('Unauthorized access attempt.' . print_r($headers, true));
     exit('Unauthorized');
+}
+
+if (isWebhookPaused()) {
+    http_response_code(200);
+    error_log('Webhook pausado - envio ignorado.');
+    exit('Webhook pausado');
 }
 
 // 2. Ler o corpo da requisição
