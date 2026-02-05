@@ -31,7 +31,7 @@ switch ($action) {
             exit('Invalid seconds');
         }
 
-        pauseWebhooksFor($seconds);
+        pauseApisFor($seconds);
 
         echo json_encode([
             'status'  => 'paused',
@@ -40,7 +40,7 @@ switch ($action) {
         break;
 
     case 'resume':
-        resumeWebhooks();
+        resumeApis();
 
         echo json_encode([
             'status' => 'resumed'
@@ -48,7 +48,7 @@ switch ($action) {
         break;
 
     case 'status':
-        echo json_encode(getWebhookPauseStatus());
+        echo json_encode(getApiPauseStatus());
         break;
 
     default:

@@ -1,23 +1,23 @@
 <?php
 
-function pauseWebhooksFor(int $seconds): void
+function pauseApisFor(int $seconds): void
 {
-    $pauseFile = __DIR__ . '/pause_webhook.txt';
+    $pauseFile = __DIR__ . '/pause_api.txt';
     file_put_contents($pauseFile, time() + $seconds);
 }
 
-function resumeWebhooks(): void
+function resumeApis(): void
 {
-    $pauseFile = __DIR__ . '/pause_webhook.txt';
+    $pauseFile = __DIR__ . '/pause_api.txt';
 
     if (file_exists($pauseFile)) {
         unlink($pauseFile);
     }
 }
 
-function getWebhookPauseStatus(): array
+function getApiPauseStatus(): array
 {
-    $pauseFile = __DIR__ . '/pause_webhook.txt';
+    $pauseFile = __DIR__ . '/pause_api.txt';
 
     if (!file_exists($pauseFile)) {
         return [
@@ -45,8 +45,8 @@ function getWebhookPauseStatus(): array
     ];
 }
 
-function isWebhookPaused(): bool
+function isApiPaused(): bool
 {
-    $status = getWebhookPauseStatus();
+    $status = getApiPauseStatus();
     return $status['paused'];
 }

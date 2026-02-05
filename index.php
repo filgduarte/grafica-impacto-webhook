@@ -4,7 +4,7 @@
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     error_log('Method Not Allowed: ' . $_SERVER['REQUEST_METHOD']);
-    exit('Method Not Allowed');
+    exit(json_encode(['error' => 'Method Not Allowed', 'status' => 405]));
 }
 
 $config = require __DIR__ . '/secrets/webhook.php';
@@ -12,72 +12,73 @@ require __DIR__ . '/helpers/http_client.php';
 require __DIR__ . '/helpers/pause_resume.php';
 require __DIR__ . '/helpers/utils.php';
 
-if (($_SERVER['HTTP_X_WEBHOOK_SECRET'] ?? '') !== $config['ecommerce_webhook']['token']) {
+// 2. Validar autenticação
+$authHeader = $_SERVER['X-Auth-Token'] ?? getallheaders()['X-Auth-Token'] ?? getallheaders()['x-auth-token'] ?? '';
+
+if (!hash_equals($config['impacto_restapi']['token'], $authHeader)) {
     foreach ($_SERVER as $key => $value) {
         if (str_starts_with($key, 'HTTP_')) {
             $headers[$key] = $value;
         }
     }
-    http_response_code(200);
+    http_response_code(401);
     error_log('Unauthorized access attempt.' . print_r($headers, true));
-    exit('Unauthorized');
+    exit(json_encode(['error' => 'Unauthorized', 'status' => 401]));
 }
 
-if (isWebhookPaused()) {
+// 3. Verificar se a API está pausada
+if (isApiPaused()) {
     http_response_code(200);
-    error_log('Webhook pausado - envio ignorado.');
-    exit('Webhook pausado');
+    error_log('API pausada - envio ignorado.');
+    exit(json_encode(['error' => 'API pausada', 'status' => 200]));
 }
 
-// 2. Ler o corpo da requisição
+// 4. Ler e validar a requsição
 $rawBody = file_get_contents('php://input');
 $data = json_decode($rawBody, true);
 
-// 3. Validar JSON
 if (!$data) {
-    http_response_code(200);
+    http_response_code(400);
     error_log('Invalid JSON received: ' . $rawBody);
-    exit('Invalid JSON');
+    exit(json_encode(['error' => 'Invalid JSON', 'status' => 400]));
 }
 
-// 4. Roteamento baseado no evento
+// 5. Extrair e validar o evento
 $event = $data['event'] ?? null;
+
+if (!$event) {
+    http_response_code(400);
+    error_log('Event property is required in request');
+    exit(json_encode(['error' => 'Invalid payload', 'status' => 400]));
+}
+
 $event = preg_replace('/[^a-zA-Z0-9_]/', '', $event);
-$handler = null;
-$webhook_endpoint = null;
-$webhook_token = null;
 
-switch ($event) {
-    case 'ITEM_STATUS_UPDATE':
-    case 'ORDER_NEW':
-        $handler = __DIR__ . '/handlers/' . strtolower($event) . '.php';
-        break;
+// 6. Mapear eventos para handler
+$eventHandlers = ['ITEM_STATUS_UPDATE','ORDER_NEW'];
 
-    default:
-        http_response_code(200);
-        error_log('Unsupported event type: ' . $event);
-        exit('Evento não suportado');
+if (!in_array($event, $eventHandlers)) {
+    http_response_code(400);
+    error_log('Unsupported event type: ' . $event);
+    exit(json_encode(['error' => 'Invalid payload', 'status' => 400]));
 }
 
-if (!file_exists($handler)) {
-    http_response_code(200);
-    error_log('Handler not found for event: ' . $event);
-    exit('Handler não encontrado');
+$handlerFile = __DIR__ . '/handlers/' . strtolower($event) . '.php';
+
+if (!file_exists($handlerFile)) {
+    http_response_code(500);
+    error_log('Handler not found for event: ' . $event . ' at ' . $handlerFile);
+    exit(json_encode(['error' => 'Handler not found', 'status' => 500]));
 }
 
-require $handler;
+require $handlerFile;
 
-// 5. Chamar webhook do WhatsApp
-try {
-    httpPost(
-        $webhook_endpoint,
-        $payload,
-        $webhook_token ?? null
-    );
-} catch (Exception $e) {
-    error_log('Erro ao enviar webhook de mensagem para o webhook ' . $webhook_endpoint . ': ' . $e->getMessage());
-}
-
-// 6. Retornar resposta para o e-commerce
+// 7. Retornar resposta
 http_response_code(200);
-echo 'OK';
+header('Content-Type: application/json');
+echo json_encode([
+    'success' => true,
+    'event' => $event,
+    'data' => $payload ?? null,
+    'status' => 200
+]);
