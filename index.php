@@ -44,8 +44,6 @@ if (!$data) {
 $event = $data['event'] ?? null;
 $event = preg_replace('/[^a-zA-Z0-9_]/', '', $event);
 $handler = null;
-$webhook_endpoint = null;
-$webhook_token = null;
 
 switch ($event) {
     case 'ITEM_STATUS_UPDATE':
@@ -68,11 +66,13 @@ if (!file_exists($handler)) {
 require $handler;
 
 // 5. Chamar webhook do WhatsApp
+$webhook_endpoint = $config['messaging_webhook']['endpoint'];
+$webhook_token = $config['messaging_webhook']['token'] ?? null;
 try {
     httpPost(
         $webhook_endpoint,
         $payload,
-        $webhook_token ?? null
+        $webhook_token
     );
 } catch (Exception $e) {
     error_log('Erro ao enviar webhook de mensagem para o webhook ' . $webhook_endpoint . ': ' . $e->getMessage());

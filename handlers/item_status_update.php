@@ -16,6 +16,33 @@ $orderItemStatus = $item['status'] ?? null;
 $orderItemProduct = $item['produto'] ?? null;
 $customerId = $item['cliente'] ?? null;
 
+$defaultStatuses = [
+    'Aguardando confirm. pagto',    // 0
+    'Pendente',                     // 1
+    'Em produção',                  // 2
+    'Em impressão',                 // 3
+    'Em acabamento',                // 4
+    'Disponível para retirada',     // 5
+    'Material retirado',            // 6
+    'Cancelado',                    // 7
+    'Cancelado pelo cliente',       // 8
+    'Aguardando envio',             // 9
+    'Em transporte',                // 10
+    'Entregue',                     // 11
+    'Despachado',                   // 12
+];
+
+$used_status = ['Entregue', 'Disponível para retirada'];
+
+if ($orderItemStatus < count($defaultStatuses)) {
+    $orderItemStatus = $defaultStatuses[$orderItemStatus];
+}
+
+if (!in_array($orderItemStatus, $used_status)) {
+    http_response_code(200);
+    exit('Status do item não é usado');
+}
+
 if (!$orderId || !$customerId) {
     http_response_code(200);
     error_log('Incomplete data: orderId or customerId missing. Payload: ' . json_encode($data));
@@ -90,33 +117,10 @@ if (!$orderItem) {
     exit('Item não encontrado no pedido');
 }
 
-$webhook_endpoint = $config['statuschange_webhook']['endpoint'];
-$webhook_token = $config['statuschange_webhook']['token'];
-
 // 5. Montar payload
 $phone = normalizePhone($customer['telefone'] ?? '');
 $cell = normalizePhone($customer['celular'] ?? '');
 $productTitle = sanitizeString( $product ? $product['titulo'] : ($orderItem['descricao'] ?? '') );
-$status = $orderItemStatus;
-$defaultStatuses = [
-    'Aguardando confirm. pagto',    // 0
-    'Pendente',                     // 1
-    'Em produção',                  // 2
-    'Em impressão',                 // 3
-    'Em acabamento',                // 4
-    'Disponível para retirada',     // 5
-    'Material retirado',            // 6
-    'Cancelado',                    // 7
-    'Cancelado pelo cliente',       // 8
-    'Aguardando envio',             // 9
-    'Em transporte',                // 10
-    'Entregue',                     // 11
-    'Despachado',                   // 12
-];
-
-if ($orderItemStatus < count($defaultStatuses)) {
-    $status = $defaultStatuses[$orderItemStatus];
-}
 
 if (empty($phone) && empty($cell)) {
     http_response_code(200);
@@ -125,7 +129,7 @@ if (empty($phone) && empty($cell)) {
 }
 
 $payload = [
-    'event' => 'ITEM_STATUS_UPDATE',
+    'event' => 'status_atualizado',
     'cliente' => [
         'nome'              => $customer['nome'] ?? '',
         'sobrenome'         => $customer['sobrenome'] ?? '',
@@ -157,7 +161,7 @@ $payload = [
         'previsao_producao' => $orderItem['previsao_producao'] ?? '',
         'produto'           => $productTitle ?? '',
         'quantidade'        => $orderItem['qtde'] ?? '',
-        'status'            => $status ?? '',
+        'status'            => $orderItemStatus ?? '',
         'variacao'          => $orderItem['vars'] ?? '',
         'valor'             => $orderItem['valor'] ?? '',
         'acrescimo'         => $order['acrescimo'] ?? '',

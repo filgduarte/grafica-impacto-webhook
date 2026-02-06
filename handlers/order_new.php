@@ -62,9 +62,6 @@ if (empty($orderItems)) {
 
 $orderItemsCount = count($orderItems);
 
-$webhook_endpoint = $config['ordernew_webhook']['endpoint'];
-$webhook_token = $config['ordernew_webhook']['token'];
-
 // 5. Montar payload
 $phone = normalizePhone($customer['telefone'] ?? '');
 $cell = normalizePhone($customer['celular'] ?? '');
@@ -76,7 +73,7 @@ if (empty($phone) && empty($cell)) {
 }
 
 $payload = [
-    'event' => 'ORDER_NEW',
+    'event' => 'novo_pedido',
     'cliente' => [
         'nome'              => $customer['nome'] ?? '',
         'sobrenome'         => $customer['sobrenome'] ?? '',
@@ -96,7 +93,10 @@ $payload = [
     ],
     'pedido' => [
         'numero'            => $orderId,
-        'numero_de_itens'  => $orderItemsCount,
+        'numero_de_itens'   => $orderItemsCount,
+        'produto'           => $order['produto'] ?? '',
+        'previsao_entrega'  => $orderItem['previsao_entrega'] ?? '',
+        'previsao_producao' => $orderItem['previsao_producao'] ?? '',
         'valor_total'       => $order['total'] ?? '',
         'acrescimo'         => $order['acrescimo'] ?? '',
         'desconto'          => $order['desconto'] ?? '',
