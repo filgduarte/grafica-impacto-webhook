@@ -82,7 +82,7 @@ $payload = [
         'celular'           => $cell,
         'email'             => $customer['email_log'] ?? '',
         'telefone'          => $phone,
-        'revendedor'        => $customer['revendedor'] ?? 0,
+        'revendedor'        => ($customer['revendedor'] == 1) ? 'Sim' : 'Não',
         'tipo'              => $customer['tipo'] ?? '',
     ],
     'entrega' => [

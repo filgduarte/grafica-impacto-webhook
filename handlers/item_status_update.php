@@ -30,9 +30,10 @@ $defaultStatuses = [
     'Em transporte',                // 10
     'Entregue',                     // 11
     'Despachado',                   // 12
+    'Rejeitado',                    // 13
 ];
 
-$used_status = ['Entregue', 'Disponível para retirada'];
+$used_status = ['Entregue', 'Disponível para retirada', 'Rejeitado'];
 
 if ($orderItemStatus < count($defaultStatuses)) {
     $orderItemStatus = $defaultStatuses[$orderItemStatus];
@@ -138,7 +139,7 @@ $payload = [
         'celular'           => $cell,
         'email'             => $customer['email_log'] ?? '',
         'telefone'          => $phone,
-        'revendedor'        => $customer['revendedor'] ?? 0,
+        'revendedor'        => ($customer['revendedor'] == 1) ? 'Sim' : 'Não',
         'tipo'              => $customer['tipo'] ?? '',
     ],
     'entrega' => [
